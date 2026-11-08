@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import Owl from '../components/Owl.astro';
+import { url } from '../lib/content';
+---
+
+<Base title="Không tìm thấy trang" noindex>
+  <div style="display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+    <Owl size={120} />
+    <div>
+      <h1 style="font-family:var(--font-display);margin:0 0 8px">Không tìm thấy trang này</h1>
+      <p class="lede" style="margin:0 0 18px">
+        Đường dẫn có thể đã đổi hoặc bài viết chưa được xuất bản. Thử tìm bằng phím <kbd>/</kbd> hoặc quay lại trang chủ.
+      </p>
+      <a class="btn" href={url('/')}>Về trang chủ</a>
+    </div>
+  </div>
+</Base>

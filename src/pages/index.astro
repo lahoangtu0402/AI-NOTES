@@ -1,0 +1,148 @@
+---
+import Base from '../layouts/Base.astro';
+import CourseIcon from '../components/CourseIcon.astro';
+import HeroDesk from '../components/HeroDesk.astro';
+import NoteRow from '../components/NoteRow.astro';
+import { site } from '../config';
+import {
+  getCourses,
+  getNotes,
+  courseHref,
+  lastUpdated,
+  latestUpdate,
+  formatDate,
+} from '../lib/content';
+
+const courses = await getCourses();
+const notes = await getNotes();
+const regular = courses.filter((c) => c.data.kind === 'course');
+const libraries = courses.filter((c) => c.data.kind === 'library');
+
+const byCourse = (id: string) => notes.filter((n) => n.data.course === id);
+const courseTitle = new Map(courses.map((c) => [c.id, c.data.short]));
+
+const recent = [...notes]
+  .sort((a, b) => (lastUpdated(b)?.getTime() ?? 0) - (lastUpdated(a)?.getTime() ?? 0))
+  .slice(0, 5);
+const latest = formatDate(latestUpdate(notes));
+const reviewed = notes.filter((n) => n.data.status === 'reviewed').length;
+---
+
+<Base>
+  <section class="hero" aria-labelledby="hero-title">
+    <div>
+      <h1 id="hero-title">{site.heroTitle}</h1>
+      <p>{site.heroText}</p>
+      <div class="hero-actions">
+        <a class="btn" href="#courses">Xem môn học</a>
+        {
+          libraries[0] && (
+            <a class="btn secondary" href={courseHref(libraries[0])}>
+              {libraries[0].data.title}
+            </a>
+          )
+        }
+      </div>
+    </div>
+    <div class="hero-art">
+      <HeroDesk />
+    </div>
+  </section>
+
+  <dl class="stats">
+    <div class="stat">
+      <dt>Môn học</dt>
+      <dd>{regular.length}<small>đang theo học</small></dd>
+    </div>
+    <div class="stat">
+      <dt>Bài viết</dt>
+      <dd>{notes.length}<small>{reviewed} bài đã rà soát</small></dd>
+    </div>
+    <div class="stat">
+      <dt>Cập nhật gần nhất</dt>
+      <dd>{latest || '—'}<small>theo lịch sử commit</small></dd>
+    </div>
+    <div class="stat">
+      <dt>Học kỳ</dt>
+      <dd>{site.currentTerm.split('·')[0].trim()}<small>Năm học {site.currentTerm.split('·')[1]?.trim()}</small></dd>
+    </div>
+  </dl>
+
+  <div class="section-head" id="courses">
+    <h2>Môn học</h2>
+    <p>{regular.length} môn</p>
+  </div>
+  <ul class="card-grid">
+    {
+      regular.map((c) => {
+        const list = byCourse(c.id);
+        const upd = formatDate(latestUpdate(list));
+        return (
+          <li>
+            <article class="card">
+              <div class="card-top">
+                <CourseIcon name={c.data.icon} size={56} />
+                <span class="card-kicker">{c.data.semester ?? site.currentTerm}</span>
+              </div>
+              <h3>
+                <a href={courseHref(c)}>{c.data.title}</a>
+              </h3>
+              <p>{c.data.description}</p>
+              <div class="card-meta">
+                <span>{list.length} bài viết</span>
+                {upd && <span>cập nhật {upd}</span>}
+              </div>
+            </article>
+          </li>
+        );
+      })
+    }
+  </ul>
+
+  {
+    libraries.length > 0 && (
+      <>
+        <div class="section-head">
+          <h2>Thư viện dùng chung</h2>
+          <p>Viết một lần, các môn đều liên kết tới</p>
+        </div>
+        <ul class="card-grid">
+          {libraries.map((c) => {
+            const list = byCourse(c.id);
+            return (
+              <li>
+                <article class="card library-card">
+                  <CourseIcon name={c.data.icon} size={52} />
+                  <div class="body">
+                    <h3>
+                      <a href={courseHref(c)}>{c.data.title}</a>
+                    </h3>
+                    <p>{c.data.description}</p>
+                    <div class="card-meta">
+                      <span>{list.length} bài viết</span>
+                    </div>
+                  </div>
+                </article>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )
+  }
+
+  {
+    recent.length > 0 && (
+      <>
+        <div class="section-head">
+          <h2>Mới cập nhật</h2>
+        </div>
+        <ul class="note-list">
+          {recent.map((n) => (
+            <NoteRow note={n} showCourse={courseTitle.get(n.data.course)} />
+          ))}
+        </ul>
+      </>
+    )
+  }
+</Base>

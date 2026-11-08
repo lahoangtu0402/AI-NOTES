@@ -1,0 +1,321 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource/be-vietnam-pro/400.css';
+import '@fontsource/be-vietnam-pro/500.css';
+import '@fontsource/be-vietnam-pro/600.css';
+import 'katex/dist/katex.min.css';
+import '../styles/global.css';
+
+import CourseIcon from '../components/CourseIcon.astro';
+import Owl from '../components/Owl.astro';
+import { site } from '../config';
+import { getCourses, courseHref, formatDate, url } from '../lib/content';
+
+interface Props {
+  title?: string;
+  description?: string;
+  noindex?: boolean;
+}
+
+const { title, description = site.description, noindex = false } = Astro.props;
+const fullTitle = title ? `${title} | ${site.name}` : site.title;
+const courses = await getCourses();
+const regular = courses.filter((c) => c.data.kind === 'course');
+const libraries = courses.filter((c) => c.data.kind === 'library');
+const path = Astro.url.pathname;
+const isHome = path === url('/');
+const canonical = new URL(path, Astro.site).href;
+const builtAt = formatDate(new Date());
+---
+
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f6efe3" media="(prefers-color-scheme: light)" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="vi_VN" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+
+    <!-- Đặt chủ đề trước khi vẽ trang để không bị nháy sáng/tối -->
+    <script is:inline>
+      try {
+        var t = localStorage.getItem('theme');
+        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main-content">Bỏ qua đến nội dung chính</a>
+
+    <header class="topbar">
+      <button
+        class="icon-btn menu-btn"
+        type="button"
+        aria-label="Mở danh mục môn học"
+        aria-controls="sidebar"
+        aria-expanded="false"
+        id="menu-btn"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 7h16M4 12h16M4 17h16"></path>
+        </svg>
+      </button>
+
+      <a class="brand" href={url('/')}>
+        <span class="brand-mark" aria-hidden="true">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#4a2f00" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3 3 8l9 5 9-5-9-5Z"></path>
+            <path d="M7 10.5V15c0 1.4 2.2 3 5 3s5-1.6 5-3v-4.5"></path>
+          </svg>
+        </span>
+        <span class="brand-name">{site.name}</span>
+      </a>
+
+      <span class="topbar-spacer"></span>
+
+      <button class="search-btn" type="button" id="search-open" aria-label="Tìm kiếm trong sổ tay" aria-keyshortcuts="/">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <span class="grow">Tìm bài học…</span>
+        <kbd>/</kbd>
+      </button>
+
+      <button class="icon-btn theme-btn" type="button" id="theme-btn" aria-label="Đổi giao diện sáng hoặc tối">
+        <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>
+        </svg>
+        <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5Z"></path>
+        </svg>
+      </button>
+    </header>
+
+    <div class="shell">
+      <aside class="sidebar" id="sidebar" aria-label="Danh mục">
+        <div class="nav-group">
+          <h2>Danh mục</h2>
+          <ul class="nav-list">
+            <li>
+              <a class="nav-link" href={url('/')} aria-current={isHome ? 'page' : undefined}>
+                <span class="nav-home" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 11.5 12 4l9 7.5"></path>
+                    <path d="M5.5 10v9.5h13V10"></path>
+                  </svg>
+                </span>
+                Trang chủ
+              </a>
+            </li>
+            {
+              regular.map((c) => (
+                <li>
+                  <a
+                    class="nav-link"
+                    href={courseHref(c)}
+                    aria-current={path.startsWith(courseHref(c)) ? 'page' : undefined}
+                  >
+                    <CourseIcon name={c.data.icon} size={34} />
+                    <span class="names">
+                      {c.data.title}
+                      <small>{c.data.short}</small>
+                    </span>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        </div>
+
+        {
+          libraries.length > 0 && (
+            <div class="nav-group">
+              <h2>Thư viện dùng chung</h2>
+              <ul class="nav-list">
+                {libraries.map((c) => (
+                  <li>
+                    <a
+                      class="nav-link"
+                      href={courseHref(c)}
+                      aria-current={path.startsWith(courseHref(c)) ? 'page' : undefined}
+                    >
+                      <CourseIcon name={c.data.icon} size={34} />
+                      <span class="names">
+                        {c.data.title}
+                        <small>{c.data.short}</small>
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+
+        <div class="mascot-note">
+          <Owl size={52} />
+          <p style="margin:0">
+            <strong>Chúc học tốt!</strong>
+            Ghi chú được cập nhật sau mỗi buổi học.
+          </p>
+        </div>
+      </aside>
+
+      <div>
+        <main id="main-content" tabindex="-1">
+          <slot />
+        </main>
+        <footer class="site-footer">
+          <span>Sổ tay học tập cá nhân.</span>
+          <span>Bản dựng ngày {builtAt}</span>
+        </footer>
+      </div>
+    </div>
+
+    <dialog class="search-dialog" id="search-dialog" aria-label="Tìm kiếm" data-base={url('/')}>
+      <form method="dialog" id="search-form" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.5-3.5"></path>
+        </svg>
+        <label class="sr-only" for="search-input">Từ khóa</label>
+        <input id="search-input" type="search" placeholder="Nhập từ khóa, ví dụ: tích chập, PageRank…" autocomplete="off" />
+        <kbd>Esc</kbd>
+      </form>
+      <div id="search-status" class="search-status" role="status" aria-live="polite">
+        Gõ để tìm trong tất cả bài viết.
+      </div>
+      <ul class="search-results" id="search-results"></ul>
+    </dialog>
+
+    <script>
+      /* ---- Chủ đề sáng/tối ---- */
+      const root = document.documentElement;
+      const themeBtn = document.getElementById('theme-btn');
+      themeBtn?.addEventListener('click', () => {
+        const current =
+          root.dataset.theme ||
+          (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        const next = current === 'dark' ? 'light' : 'dark';
+        root.dataset.theme = next;
+        try {
+          localStorage.setItem('theme', next);
+        } catch {
+          /* bỏ qua nếu trình duyệt chặn lưu trữ */
+        }
+      });
+
+      /* ---- Menu trên điện thoại ---- */
+      const menuBtn = document.getElementById('menu-btn');
+      const setMenu = (open: boolean) => {
+        document.body.dataset.menu = open ? 'open' : 'closed';
+        menuBtn?.setAttribute('aria-expanded', String(open));
+      };
+      menuBtn?.addEventListener('click', () => setMenu(document.body.dataset.menu !== 'open'));
+      document.getElementById('sidebar')?.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('a')) setMenu(false);
+      });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') setMenu(false);
+      });
+
+      /* ---- Tìm kiếm (Pagefind) ---- */
+      const dialog = document.getElementById('search-dialog') as HTMLDialogElement;
+      const input = document.getElementById('search-input') as HTMLInputElement;
+      const status = document.getElementById('search-status')!;
+      const list = document.getElementById('search-results')!;
+      const base = dialog.dataset.base || '/';
+      let pagefind: any = null;
+      let loadFailed = false;
+
+      async function load() {
+        if (pagefind || loadFailed) return;
+        try {
+          pagefind = await import(/* @vite-ignore */ `${base}pagefind/pagefind.js`);
+          await pagefind.options({ baseUrl: base });
+        } catch {
+          loadFailed = true;
+          status.textContent =
+            'Chưa có chỉ mục tìm kiếm. Chạy "npm run build" rồi "npm run preview" để dùng chức năng này.';
+        }
+      }
+
+      function openSearch() {
+        if (!dialog.open) dialog.showModal();
+        input.focus();
+        input.select();
+        load();
+      }
+
+      document.getElementById('search-open')?.addEventListener('click', openSearch);
+      document.addEventListener('keydown', (e) => {
+        const target = e.target as HTMLElement;
+        const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName) || target.isContentEditable;
+        if (e.key === '/' && !typing && !e.metaKey && !e.ctrlKey) {
+          e.preventDefault();
+          openSearch();
+        }
+      });
+      dialog.addEventListener('click', (e) => {
+        if (e.target === dialog) dialog.close();
+      });
+
+      function fixUrl(u: string) {
+        const b = base.replace(/\/$/, '');
+        return b && !u.startsWith(b + '/') ? b + u : u;
+      }
+
+      let timer: number | undefined;
+      input.addEventListener('input', () => {
+        clearTimeout(timer);
+        timer = window.setTimeout(run, 150);
+      });
+
+      async function run() {
+        const q = input.value.trim();
+        list.innerHTML = '';
+        if (!q) {
+          status.textContent = 'Gõ để tìm trong tất cả bài viết.';
+          return;
+        }
+        await load();
+        if (!pagefind) return;
+        status.textContent = 'Đang tìm…';
+        const search = await pagefind.search(q);
+        const top = await Promise.all(search.results.slice(0, 8).map((r: any) => r.data()));
+        if (!top.length) {
+          status.textContent = `Không có kết quả cho "${q}". Thử từ khóa ngắn hơn hoặc viết không dấu.`;
+          return;
+        }
+        status.textContent = `${search.results.length} kết quả`;
+        for (const d of top) {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = fixUrl(d.url);
+          const strong = document.createElement('strong');
+          strong.textContent = d.meta?.title ?? d.url;
+          const p = document.createElement('p');
+          p.innerHTML = d.excerpt; // Pagefind chỉ trả về <mark> trong đoạn trích
+          a.append(strong, p);
+          li.append(a);
+          list.append(li);
+        }
+      }
+    </script>
+  </body>
+</html>

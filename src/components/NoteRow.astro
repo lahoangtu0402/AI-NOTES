@@ -1,0 +1,25 @@
+---
+import { noteHref, tagHref, typeLabels, levelLabels, statusLabels, lastUpdated, formatDate, type Note } from '../lib/content';
+
+interface Props {
+  note: Note;
+  showCourse?: string; // tên môn, nếu muốn hiện kèm (dùng ở trang chủ và trang tag)
+}
+const { note, showCourse } = Astro.props;
+const d = note.data;
+const date = formatDate(lastUpdated(note));
+---
+
+<li class="note-row">
+  <h3><a href={noteHref(note)}>{d.title}</a></h3>
+  <p>{d.summary}</p>
+  <ul class="chips">
+    <li><span class="chip" data-kind={d.type}>{typeLabels[d.type]}</span></li>
+    {showCourse && <li><span class="chip tag">{showCourse}</span></li>}
+    <li><span class="chip" data-level={d.level}>{levelLabels[d.level]}</span></li>
+    <li><span class="chip" data-status={d.status}>{statusLabels[d.status]}</span></li>
+    {d.visibility === 'private' && <li><span class="chip tag">Riêng tư</span></li>}
+    {d.tags.slice(0, 3).map((t) => <li><a class="chip tag" href={tagHref(t)}>#{t}</a></li>)}
+    {date && <li><span class="chip tag">Cập nhật {date}</span></li>}
+  </ul>
+</li>

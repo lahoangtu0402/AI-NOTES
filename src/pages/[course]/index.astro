@@ -1,0 +1,77 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CourseIcon from '../../components/CourseIcon.astro';
+import NoteRow from '../../components/NoteRow.astro';
+import {
+  getCourses,
+  getNotesOfCourse,
+  typeLabels,
+  typeOrder,
+  latestUpdate,
+  formatDate,
+  url,
+} from '../../lib/content';
+
+export async function getStaticPaths() {
+  const courses = await getCourses();
+  return courses.map((course) => ({ params: { course: course.id }, props: { course } }));
+}
+
+const { course } = Astro.props;
+const notes = await getNotesOfCourse(course.id);
+const { Content } = await render(course);
+const upd = formatDate(latestUpdate(notes));
+
+const groups = typeOrder
+  .map((type) => ({ type, items: notes.filter((n) => n.data.type === type) }))
+  .filter((g) => g.items.length > 0);
+---
+
+<Base title={course.data.title} description={course.data.description}>
+  <ol class="breadcrumb">
+    <li><a href={url('/')}>Trang chủ</a></li>
+    <li aria-current="page">{course.data.short}</li>
+  </ol>
+
+  <div class="page-head">
+    <CourseIcon name={course.data.icon} size={72} />
+    <div>
+      <h1>{course.data.title}</h1>
+      <p class="lede" style="margin-top:6px">
+        {course.data.description}
+        {upd && <> Cập nhật {upd}.</>}
+      </p>
+    </div>
+  </div>
+
+  <div class="prose" style="margin-top:28px;max-width:var(--measure)">
+    <Content />
+  </div>
+
+  <div class="section-head" style="margin-top:40px">
+    <h2>Bài viết</h2>
+    <p>{notes.length} bài</p>
+  </div>
+
+  {
+    notes.length === 0 ? (
+      <div class="empty">
+        Chưa có bài viết nào. Tạo bài đầu tiên bằng lệnh <code>npm run new -- lecture {course.id} "Tên bài"</code>.
+      </div>
+    ) : (
+      groups.map((g) => (
+        <section aria-labelledby={`g-${g.type}`}>
+          <h3 class="group-title" id={`g-${g.type}`}>
+            {typeLabels[g.type]}
+          </h3>
+          <ul class="note-list">
+            {g.items.map((n) => (
+              <NoteRow note={n} />
+            ))}
+          </ul>
+        </section>
+      ))
+    )
+  }
+</Base>

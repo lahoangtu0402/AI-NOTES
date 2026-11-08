@@ -1,0 +1,31 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getTags, tagHref, url } from '../../lib/content';
+
+const tags = await getTags();
+---
+
+<Base title="Thẻ" description="Danh sách thẻ cắt ngang các môn học.">
+  <ol class="breadcrumb">
+    <li><a href={url('/')}>Trang chủ</a></li>
+    <li aria-current="page">Thẻ</li>
+  </ol>
+  <h1 style="font-family:var(--font-display);margin:0 0 8px">Thẻ</h1>
+  <p class="lede">Thẻ nối các bài ở nhiều môn khác nhau, ví dụ bài về CNN và bài về GNN cùng thẻ <code>deep-learning</code>.</p>
+
+  {
+    tags.size === 0 ? (
+      <div class="empty" style="margin-top:24px">Chưa có thẻ nào. Thêm <code>tags: [ten-the]</code> vào phần đầu của bài viết.</div>
+    ) : (
+      <ul class="chips" style="margin-top:24px;gap:10px">
+        {[...tags.entries()].map(([tag, list]) => (
+          <li>
+            <a class="chip tag" href={tagHref(tag)} style="font-size:0.95rem;padding:6px 14px">
+              #{tag} <span style="color:var(--muted)">{list.length}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</Base>

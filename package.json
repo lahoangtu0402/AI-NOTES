@@ -1,0 +1,23 @@
+{
+  "name": "ai-notes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sổ tay học tập AI và Khoa học dữ liệu",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build && pagefind --site dist --exclude-selectors \".katex\"",
+    "preview": "astro preview",
+    "new": "node scripts/new.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.6",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource/be-vietnam-pro": "^5.3.0",
+    "astro": "^7.4.7",
+    "katex": "^0.19.1",
+    "pagefind": "^1.6.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
+  }
+}

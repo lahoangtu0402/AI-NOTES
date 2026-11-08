@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "short": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "kind": {
+      "default": "course",
+      "type": "string",
+      "enum": [
+        "course",
+        "library"
+      ]
+    },
+    "icon": {
+      "type": "string",
+      "enum": [
+        "vision",
+        "network",
+        "algorithm",
+        "concept",
+        "research",
+        "math",
+        "code",
+        "data"
+      ]
+    },
+    "semester": {
+      "type": "string"
+    },
+    "order": {
+      "default": 100,
+      "type": "number"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "short",
+    "description",
+    "icon"
+  ]
+}

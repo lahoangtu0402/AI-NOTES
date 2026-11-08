@@ -1,0 +1,238 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import {
+  getCourses,
+  getNotes,
+  getNotesOfCourse,
+  getNoteIndex,
+  backlinks,
+  noteHref,
+  noteKey,
+  noteSlug,
+  courseHref,
+  tagHref,
+  typeLabels,
+  levelLabels,
+  statusLabels,
+  lastUpdated,
+  formatDate,
+  url,
+} from '../../lib/content';
+
+export async function getStaticPaths() {
+  const notes = await getNotes();
+  return notes.map((note) => ({
+    params: { course: note.data.course, note: noteSlug(note) },
+    props: { note },
+  }));
+}
+
+const { note } = Astro.props;
+const d = note.data;
+const courses = await getCourses();
+const course = courses.find((c) => c.id === d.course);
+if (!course) {
+  throw new Error(`Bài "${note.id}" khai báo course "${d.course}" nhưng không có file tương ứng trong src/content/courses/.`);
+}
+
+const allNotes = await getNotes();
+const index = await getNoteIndex();
+const { Content, headings } = await render(note);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+// Chuyển danh sách khóa "course/slug" thành bài viết; cảnh báo khi trỏ sai.
+const resolve = (keys: string[], field: string) =>
+  keys.flatMap((k) => {
+    const n = index.get(k);
+    if (!n) {
+      console.warn(`[cảnh báo] ${note.id}: ${field} "${k}" không trỏ tới bài nào (hoặc bài đó là private).`);
+      return [];
+    }
+    return [n];
+  });
+
+const prerequisites = resolve(d.prerequisites, 'prerequisites');
+const usedIn = resolve(d.usedIn, 'usedIn');
+const related = resolve(d.related, 'related');
+const { usedBy, mentionedIn } = backlinks(note, allNotes);
+// gộp, bỏ trùng
+const usedList = [...new Map([...usedIn, ...mentionedIn].map((n) => [noteKey(n), n])).values()];
+const nextSteps = usedBy.filter((n) => !usedList.includes(n));
+
+const siblings = await getNotesOfCourse(d.course);
+const pos = siblings.findIndex((n) => n.id === note.id);
+const prev = pos > 0 ? siblings[pos - 1] : undefined;
+const next = pos >= 0 && pos < siblings.length - 1 ? siblings[pos + 1] : undefined;
+
+const date = formatDate(lastUpdated(note));
+const hasRelated = prerequisites.length || usedList.length || nextSteps.length || related.length;
+---
+
+<Base title={d.title} description={d.summary}>
+  <div class="article-layout">
+    <article data-pagefind-body>
+      <ol class="breadcrumb" data-pagefind-ignore>
+        <li><a href={url('/')}>Trang chủ</a></li>
+        <li><a href={courseHref(course)}>{course.data.short}</a></li>
+        <li aria-current="page">{typeLabels[d.type]}</li>
+      </ol>
+
+      <header class="article-head">
+        <h1>{d.title}</h1>
+        <p class="lede">{d.summary}</p>
+        <ul class="chips" data-pagefind-ignore>
+          <li><span class="chip" data-kind={d.type}>{typeLabels[d.type]}</span></li>
+          <li><span class="chip" data-level={d.level}>{levelLabels[d.level]}</span></li>
+          <li><span class="chip" data-status={d.status}>{statusLabels[d.status]}</span></li>
+          {d.tags.map((t) => <li><a class="chip tag" href={tagHref(t)}>#{t}</a></li>)}
+        </ul>
+      </header>
+
+      {
+        d.visibility === 'private' && (
+          <p class="draft-banner" role="note">
+            Bài này đang để chế độ riêng tư: chỉ thấy khi chạy <code>npm run dev</code>, sẽ không có trong bản xuất bản.
+          </p>
+        )
+      }
+      {
+        d.status === 'draft' && (
+          <p class="draft-banner" role="note">
+            Đây là bản nháp, chưa được đối chiếu lại với tài liệu gốc. Hãy kiểm tra công thức và số liệu trước khi dùng.
+          </p>
+        )
+      }
+
+      {
+        (d.source || d.paperUrl || d.lecturer || date) && (
+          <dl class="meta-box" data-pagefind-ignore>
+            {d.paperAuthors && (
+              <>
+                <dt>Tác giả</dt>
+                <dd>
+                  {d.paperAuthors}
+                  {d.paperYear && <> ({d.paperYear})</>}
+                </dd>
+              </>
+            )}
+            {d.paperUrl && (
+              <>
+                <dt>Bài báo</dt>
+                <dd>
+                  <a href={d.paperUrl} rel="noopener noreferrer">{d.paperUrl.replace(/^https?:\/\//, '')}</a>
+                </dd>
+              </>
+            )}
+            {d.lecturer && (
+              <>
+                <dt>Giảng viên</dt>
+                <dd>{d.lecturer}</dd>
+              </>
+            )}
+            {(d.sourceTitle || d.source) && (
+              <>
+                <dt>Tài liệu gốc</dt>
+                <dd>
+                  {d.sourceTitle ?? ''}
+                  {d.source && <> <code>{d.source}</code></>}
+                </dd>
+              </>
+            )}
+            {date && (
+              <>
+                <dt>Cập nhật</dt>
+                <dd>{date}</dd>
+              </>
+            )}
+          </dl>
+        )
+      }
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      {
+        hasRelated ? (
+          <section class="related" aria-label="Bài liên quan">
+            {prerequisites.length > 0 && (
+              <div>
+                <h2>Nên học trước</h2>
+                <ul>
+                  {prerequisites.map((n) => (
+                    <li><a href={noteHref(n)}>{n.data.title}</a></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {usedList.length > 0 && (
+              <div>
+                <h2>Được dùng ở</h2>
+                <ul>
+                  {usedList.map((n) => (
+                    <li><a href={noteHref(n)}>{n.data.title}</a></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {nextSteps.length > 0 && (
+              <div>
+                <h2>Học tiếp</h2>
+                <ul>
+                  {nextSteps.map((n) => (
+                    <li><a href={noteHref(n)}>{n.data.title}</a></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {related.length > 0 && (
+              <div>
+                <h2>Xem thêm</h2>
+                <ul>
+                  {related.map((n) => (
+                    <li><a href={noteHref(n)}>{n.data.title}</a></li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </section>
+        ) : null
+      }
+
+      {
+        (prev || next) && (
+          <nav class="prev-next" aria-label="Bài trước và bài sau">
+            {prev && (
+              <a class="prev" href={noteHref(prev)} rel="prev">
+                <small>Bài trước</small>
+                <span>{prev.data.title}</span>
+              </a>
+            )}
+            {next && (
+              <a class="next" href={noteHref(next)} rel="next">
+                <small>Bài sau</small>
+                <span>{next.data.title}</span>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </article>
+
+    {
+      toc.length > 1 && (
+        <nav class="toc" aria-label="Mục lục">
+          <h2>Trong bài này</h2>
+          <ol>
+            {toc.map((h) => (
+              <li class={`depth-${h.depth}`}>
+                <a href={`#${h.slug}`}>{h.text}</a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )
+    }
+  </div>
+</Base>

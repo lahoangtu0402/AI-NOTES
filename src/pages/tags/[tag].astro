@@ -1,0 +1,26 @@
+---
+import Base from '../../layouts/Base.astro';
+import NoteRow from '../../components/NoteRow.astro';
+import { getTags, getCourses, url } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const tags = await getTags();
+  return [...tags.entries()].map(([tag, notes]) => ({ params: { tag }, props: { tag, notes } }));
+}
+
+const { tag, notes } = Astro.props;
+const courses = await getCourses();
+const courseTitle = new Map(courses.map((c) => [c.id, c.data.short]));
+---
+
+<Base title={`#${tag}`} description={`Các bài viết gắn thẻ ${tag}.`}>
+  <ol class="breadcrumb">
+    <li><a href={url('/')}>Trang chủ</a></li>
+    <li><a href={url('/tags/')}>Thẻ</a></li>
+    <li aria-current="page">#{tag}</li>
+  </ol>
+  <h1 style="font-family:var(--font-display);margin:0 0 20px">#{tag}</h1>
+  <ul class="note-list">
+    {notes.map((n) => <NoteRow note={n} showCourse={courseTitle.get(n.data.course)} />)}
+  </ul>
+</Base>

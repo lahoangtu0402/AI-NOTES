@@ -1,0 +1,75 @@
+---
+/** Linh vật cú đội mũ tốt nghiệp, vẽ bằng SVG theo phong cách clay. */
+interface Props {
+  size?: number;
+}
+const { size = 96 } = Astro.props;
+---
+
+<svg
+  class="owl"
+  width={size}
+  height={size}
+  viewBox="0 0 120 120"
+  aria-hidden="true"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <defs>
+    <radialGradient id="owl-body" cx="0.35" cy="0.25" r="0.9">
+      <stop offset="0" stop-color="#E9B15A"></stop>
+      <stop offset="0.6" stop-color="#C98A32"></stop>
+      <stop offset="1" stop-color="#9C6320"></stop>
+    </radialGradient>
+    <radialGradient id="owl-belly" cx="0.4" cy="0.3" r="0.8">
+      <stop offset="0" stop-color="#FFF3D6"></stop>
+      <stop offset="1" stop-color="#EBCB92"></stop>
+    </radialGradient>
+    <radialGradient id="owl-eye" cx="0.35" cy="0.3" r="0.9">
+      <stop offset="0" stop-color="#ffffff"></stop>
+      <stop offset="1" stop-color="#F1E6D2"></stop>
+    </radialGradient>
+    <filter id="owl-shadow" x="-20%" y="-10%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="2.4" flood-color="#000" flood-opacity="0.25"></feDropShadow>
+    </filter>
+  </defs>
+
+  <ellipse cx="60" cy="110" rx="30" ry="5" fill="#000" opacity="0.14"></ellipse>
+
+  <g filter="url(#owl-shadow)">
+    <!-- tai -->
+    <path d="M28 40 L24 20 L44 30 Z" fill="#B87A28"></path>
+    <path d="M92 40 L96 20 L76 30 Z" fill="#B87A28"></path>
+    <!-- thân -->
+    <ellipse cx="60" cy="68" rx="38" ry="40" fill="url(#owl-body)"></ellipse>
+    <ellipse cx="60" cy="82" rx="23" ry="24" fill="url(#owl-belly)"></ellipse>
+    <!-- lông bụng -->
+    <path d="M50 78 q4 4 8 0 M62 78 q4 4 8 0 M56 90 q4 4 8 0" stroke="#D3AE6C" stroke-width="2.4" stroke-linecap="round" fill="none"></path>
+    <!-- cánh -->
+    <path d="M24 66 C 14 76, 18 94, 32 98 C 34 86, 33 76, 24 66 Z" fill="#A86F26"></path>
+    <path d="M96 66 C 106 76, 102 94, 88 98 C 86 86, 87 76, 96 66 Z" fill="#A86F26"></path>
+    <!-- mắt -->
+    <circle cx="44" cy="54" r="15" fill="url(#owl-eye)"></circle>
+    <circle cx="76" cy="54" r="15" fill="url(#owl-eye)"></circle>
+    <circle cx="46" cy="56" r="7.5" fill="#2d231b"></circle>
+    <circle cx="74" cy="56" r="7.5" fill="#2d231b"></circle>
+    <circle cx="48.5" cy="53" r="2.6" fill="#fff"></circle>
+    <circle cx="76.5" cy="53" r="2.6" fill="#fff"></circle>
+    <!-- mỏ -->
+    <path d="M54 62 L66 62 L60 73 Z" fill="#E8742C"></path>
+    <!-- chân -->
+    <path d="M48 104 q-2 6 -8 6 M48 104 q0 6 -4 8 M72 104 q2 6 8 6 M72 104 q0 6 4 8" stroke="#E8742C" stroke-width="3.2" stroke-linecap="round" fill="none"></path>
+    <!-- mũ tốt nghiệp -->
+    <path d="M60 14 L100 30 L60 44 L20 30 Z" fill="#3b2f26"></path>
+    <path d="M40 38 L40 47 C 40 52, 80 52, 80 47 L80 38 L60 45 Z" fill="#2d231b"></path>
+    <path d="M60 14 L100 30 L60 44 L20 30 Z" fill="#fff" opacity="0.07"></path>
+    <path d="M96 31 L96 49" stroke="#E3A63A" stroke-width="2.4" stroke-linecap="round"></path>
+    <circle cx="96" cy="51" r="3.6" fill="#E3A63A"></circle>
+  </g>
+</svg>
+
+<style>
+  .owl {
+    display: block;
+    flex: none;
+  }
+</style>

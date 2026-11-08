@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "course": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "lecture",
+        "paper",
+        "report",
+        "exam",
+        "algorithm",
+        "concept",
+        "guide"
+      ]
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "level": {
+      "default": "beginner",
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ]
+    },
+    "status": {
+      "default": "draft",
+      "type": "string",
+      "enum": [
+        "draft",
+        "reviewed"
+      ]
+    },
+    "visibility": {
+      "default": "public",
+      "type": "string",
+      "enum": [
+        "public",
+        "private"
+      ]
+    },
+    "source": {
+      "type": "string"
+    },
+    "sourceTitle": {
+      "type": "string"
+    },
+    "lecturer": {
+      "type": "string"
+    },
+    "paperUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "paperAuthors": {
+      "type": "string"
+    },
+    "paperYear": {
+      "type": "number"
+    },
+    "prerequisites": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "usedIn": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "order": {
+      "default": 100,
+      "type": "number"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "course",
+    "type"
+  ]
+}
