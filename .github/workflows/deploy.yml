@@ -18,16 +18,18 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           fetch-depth: 0 # cần đủ lịch sử Git để tính "ngày cập nhật" từng bài
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: npm
 
-      - run: npm ci
+      # Dùng `npm install` thay cho `npm ci`: file package-lock.json tạo trên máy khác hệ điều hành
+      # (macOS/Windows) có thể thiếu vài gói tùy chọn mà Linux cần, khiến `npm ci` báo lỗi.
+      - run: npm install --no-audit --no-fund
 
       - name: Build
         run: npm run build
