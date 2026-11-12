@@ -42,6 +42,25 @@ $$
 
 1. 
 
+## Tóm tắt để nhớ
+
+- 
+
+## Câu hỏi tự kiểm tra
+
+1. 
+
+<details>
+<summary>Đáp án</summary>
+
+1. 
+
+</details>
+
 ## Tài liệu tham khảo
+
+- 
+
+## Cần kiểm tra lại
 
 - 

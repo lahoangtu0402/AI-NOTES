@@ -9,7 +9,7 @@ status: draft
 source: _sources/phan-tich-mang-xa-hoi/lectures/tuan02-do-do-trung-tam.pdf
 sourceTitle: Slide tuần 2, độ đo trung tâm (ví dụ minh họa)
 prerequisites: []
-related: [thuat-toan/pagerank]
+related: [thuat-toan/pagerank, thuat-toan/tim-kiem-theo-chieu-rong-bfs, thuat-toan/gan-nhan-thanh-phan-lien-thong]
 order: 10
 ---
 

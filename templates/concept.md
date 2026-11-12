@@ -26,6 +26,29 @@ order: 100
 
 - 
 
+## Lỗi hiểu nhầm thường gặp
+
+- 
+
 ## Khái niệm liên quan
+
+- 
+
+## Tóm tắt để nhớ
+
+- 
+
+## Câu hỏi tự kiểm tra
+
+1. 
+
+<details>
+<summary>Đáp án</summary>
+
+1. 
+
+</details>
+
+## Cần kiểm tra lại
 
 - 
