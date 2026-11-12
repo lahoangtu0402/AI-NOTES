@@ -5,7 +5,7 @@ course: thi-giac-may-tinh
 type: report
 tags: [cnn, report]
 level: intermediate
-status: draft
+status: reviewed
 visibility: private
 source: _sources/thi-giac-may-tinh/reports/bao-cao-chu-de-a.docx
 sourceTitle: Báo cáo chủ đề A (bản nộp)

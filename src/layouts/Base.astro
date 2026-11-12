@@ -29,13 +29,12 @@ const builtAt = formatDate(new Date());
 ---
 
 <!doctype html>
-<html lang="vi">
+<html lang="vi" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#171310" media="(prefers-color-scheme: dark)" />
-    <meta name="theme-color" content="#f6efe3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#f6efe3" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -52,7 +51,11 @@ const builtAt = formatDate(new Date());
     <script is:inline>
       try {
         var t = localStorage.getItem('theme');
-        if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t;
+        if (t === 'dark') {
+          document.documentElement.dataset.theme = 'dark';
+        } else {
+          document.documentElement.dataset.theme = 'light';
+        }
       } catch (e) {}
     </script>
   </head>
@@ -208,10 +211,7 @@ const builtAt = formatDate(new Date());
       const root = document.documentElement;
       const themeBtn = document.getElementById('theme-btn');
       themeBtn?.addEventListener('click', () => {
-        const current =
-          root.dataset.theme ||
-          (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        const next = current === 'dark' ? 'light' : 'dark';
+        const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
         root.dataset.theme = next;
         try {
           localStorage.setItem('theme', next);

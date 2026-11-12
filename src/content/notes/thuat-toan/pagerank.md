@@ -5,7 +5,7 @@ course: thuat-toan
 type: algorithm
 tags: [graph, ranking, linear-algebra]
 level: intermediate
-status: draft
+status: reviewed
 prerequisites: [nen-tang/vector-va-ma-tran, thuat-toan/tim-kiem-theo-chieu-rong-bfs]
 usedIn: [phan-tich-mang-xa-hoi/do-do-trung-tam]
 related: []

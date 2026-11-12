@@ -5,7 +5,7 @@ course: thuat-toan
 type: algorithm
 tags: [clustering, unsupervised]
 level: beginner
-status: draft
+status: reviewed
 prerequisites: [nen-tang/vector-va-ma-tran, khai-niem/do-do-khoang-cach]
 usedIn: []
 related: [khai-niem/overfitting, khai-niem/do-do-khoang-cach, khai-niem/khong-gian-mau]

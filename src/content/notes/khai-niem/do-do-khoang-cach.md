@@ -5,7 +5,7 @@ course: khai-niem
 type: concept
 tags: [distance, metric, foundations, clustering, computer-vision]
 level: beginner
-status: draft
+status: reviewed
 prerequisites: [nen-tang/vector-va-ma-tran]
 usedIn: [thi-giac-may-tinh/quan-he-giua-cac-diem-anh, thuat-toan/k-means]
 related: [thuat-toan/tim-kiem-theo-chieu-rong-bfs]

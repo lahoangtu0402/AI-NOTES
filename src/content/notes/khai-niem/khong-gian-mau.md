@@ -5,7 +5,7 @@ course: khai-niem
 type: concept
 tags: [color-space, image-processing, computer-vision, opencv]
 level: beginner
-status: draft
+status: reviewed
 prerequisites: [thi-giac-may-tinh/tong-quan-thi-giac-may-tinh-va-anh-so]
 usedIn: [thi-giac-may-tinh/tong-quan-thi-giac-may-tinh-va-anh-so]
 related: [thuat-toan/k-means]

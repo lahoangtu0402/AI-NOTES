@@ -55,27 +55,6 @@
   --focus: #79b8ff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --bg: #171310;
-    --surface: #211b16;
-    --surface-2: #2b241d;
-    --panel: #2e2418;
-    --ink: #f0e6d6;
-    --muted: #a99b89;
-    --line: #3a3027;
-    --accent: #e3a63a;
-    --accent-ink: #f0be62;
-    --on-accent: #1d1406;
-    --moss: #8fbf8c;
-    --moss-bg: #25301f;
-    --amber-bg: #3a2d14;
-    --code-bg: #26201a;
-    --shadow: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 22px -10px rgb(0 0 0 / 0.7);
-    --focus: #79b8ff;
-  }
-}
 
 /* ---------- Nền tảng ---------- */
 
@@ -278,14 +257,6 @@ kbd {
   display: block;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .theme-btn .sun {
-    display: none;
-  }
-  :root:not([data-theme='light']) .theme-btn .moon {
-    display: block;
-  }
-}
 
 /* ---------- Khung trang + sidebar ---------- */
 
@@ -1051,12 +1022,6 @@ a.chip:hover {
   color: var(--shiki-dark) !important;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .astro-code,
-  :root:not([data-theme='light']) .astro-code span {
-    color: var(--shiki-dark) !important;
-  }
-}
 
 .prose table {
   display: block;

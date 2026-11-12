@@ -5,7 +5,7 @@ course: thuat-toan
 type: algorithm
 tags: [connected-components, connectivity, image-processing, graph, union-find]
 level: beginner
-status: draft
+status: reviewed
 prerequisites: [thuat-toan/tim-kiem-theo-chieu-rong-bfs]
 usedIn: [thi-giac-may-tinh/quan-he-giua-cac-diem-anh]
 related: [phan-tich-mang-xa-hoi/do-do-trung-tam]

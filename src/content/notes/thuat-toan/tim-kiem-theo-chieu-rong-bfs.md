@@ -5,7 +5,7 @@ course: thuat-toan
 type: algorithm
 tags: [graph, search, shortest-path, connectivity]
 level: beginner
-status: draft
+status: reviewed
 prerequisites: []
 usedIn: [thi-giac-may-tinh/quan-he-giua-cac-diem-anh, thuat-toan/gan-nhan-thanh-phan-lien-thong]
 related: [phan-tich-mang-xa-hoi/do-do-trung-tam]
